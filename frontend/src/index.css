@@ -1,5 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* TODO (Module 2): Add Neo-Brutalist utility classes (.neo-border, .neo-shadow*, .bg-grid-dots, scrollbar overrides) here. */
+@layer base {
+  :root {
+    --bg-neobrutalist: #F9F5F6;
+    --accent-yellow: #FFDB58;
+    --pastel-mint: #DAF5F0;
+    --pastel-peach: #F8D6B3;
+    --pastel-yellow: #FDFD96;
+    --border-black: #000000;
+  }
+
+  body {
+    background-color: var(--bg-neobrutalist);
+    color: #000000;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .neo-border {
+    border: 3px solid #000000;
+  }
+
+  .neo-shadow-sm {
+    box-shadow: 2px 2px 0px 0px #000000;
+  }
+
+  .neo-shadow {
+    box-shadow: 4px 4px 0px 0px #000000;
+  }
+
+  .neo-shadow-lg {
+    box-shadow: 6px 6px 0px 0px #000000;
+  }
+
+  .neo-clickable:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px 0px #000000;
+  }
+
+  .bg-grid-dots {
+    background-image: radial-gradient(rgba(0, 0, 0, 0.15) 1.5px, transparent 1.5px);
+    background-size: 20px 20px;
+  }
+}
+
+/* Custom Webkit Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F9F5F6;
+  border-left: 3px solid #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFDB58;
+  border: 3px solid #000000;
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #F8D6B3;
+}
+
+/* Leaflet Map Popup Overrides for future use */
+.neo-popup .leaflet-popup-content-wrapper {
+  background: #FFFFFF;
+  color: #000000;
+  border: 3px solid #000000;
+  border-radius: 0px;
+  box-shadow: 4px 4px 0px 0px #000000;
+  padding: 0;
+}
+
+.neo-popup .leaflet-popup-tip-container {
+  display: none;
+}

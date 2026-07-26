@@ -7,8 +7,26 @@ export default {
   ],
   theme: {
     extend: {
-      // TODO (Module 2): Inject Neo-Brutalism color tokens (#F9F5F6 bg, #FFDB58 accent, etc.),
-      // font families (Epilogue, Inter), and flat box-shadow scale here.
+      colors: {
+        'bg-neobrutalist': '#F9F5F6',
+        'accent-yellow': '#FFDB58',
+        'pastel-mint': '#DAF5F0',
+        'pastel-peach': '#F8D6B3',
+        'pastel-yellow': '#FDFD96',
+        'border-black': '#000000',
+      },
+      fontFamily: {
+        display: ['"Epilogue"', '"Epilogue Placeholder"', 'sans-serif'],
+        body: ['"Inter"', 'sans-serif'],
+      },
+      borderWidth: {
+        '3': '3px',
+      },
+      boxShadow: {
+        'neobrutalist-sm': '2px 2px 0px 0px #000000',
+        'neobrutalist': '4px 4px 0px 0px #000000',
+        'neobrutalist-lg': '6px 6px 0px 0px #000000',
+      },
     },
   },
   plugins: [],
