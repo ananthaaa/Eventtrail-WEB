@@ -49,7 +49,7 @@ The CDK stack SHALL create an AWS Budgets monthly cost budget of USD 10.00 that 
 ### Requirement: IAM OIDC role is created with least-privilege permissions
 The CDK stack SHALL create:
 - An IAM OIDC identity provider for `token.actions.githubusercontent.com` (if not already present)
-- An IAM role `EventTrailGitHubActionsRole` with a trust policy scoped to `repo:ananthaaa/EventTrial:ref:refs/heads/main`
+- An IAM role `EventTrailGitHubActionsRole` with a trust policy scoped to `repo:ananthaaa/Eventtrail-WEB:ref:refs/heads/main`
 - An inline policy granting ONLY: `s3:PutObject`, `s3:DeleteObject`, `s3:GetObject` on `campuspulse-frontend-<account>/*` AND `cloudfront:CreateInvalidation` on the specific distribution ARN
 
 #### Scenario: Role cannot perform actions outside its policy
