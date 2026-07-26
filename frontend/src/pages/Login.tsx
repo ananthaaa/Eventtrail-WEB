@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Card, Badge, useToast } from '../components/ui';
 import { useAuth } from '../contexts/AuthContext';
-import { Sparkles, Shield, KeyRound, ArrowRight, UserCheck } from 'lucide-react';
+import { Sparkles, Shield, KeyRound, ArrowRight } from 'lucide-react';
 
 interface LoginProps {
   onNavigate: (route: string) => void;
 }
 
 export const Login: React.FC<LoginProps> = ({ onNavigate }) => {
-  const { login, isMockMode } = useAuth();
+  const { login } = useAuth();
   const { toast } = useToast();
 
   const [email, setEmail] = useState('');
@@ -127,33 +127,46 @@ export const Login: React.FC<LoginProps> = ({ onNavigate }) => {
             </div>
           </form>
 
-          {isMockMode && (
-            <div className="pt-4 border-t-2 border-dashed border-gray-200 space-y-2">
-              <p className="font-display font-bold text-[10px] text-gray-400 uppercase tracking-widest text-center">
-                ⚡ Dev Mode Quick Fills
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fillDevPersona('student@campuspulse.edu')}
-                  className="text-xs py-1.5 bg-accent-yellow/20 justify-center"
-                >
-                  <UserCheck className="w-3.5 h-3.5 inline mr-1 text-black" /> Student Persona
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fillDevPersona('admin@campuspulse.edu')}
-                  className="text-xs py-1.5 bg-peach/20 justify-center"
-                >
-                  <Shield className="w-3.5 h-3.5 inline mr-1 text-black" /> Admin Persona
-                </Button>
+          <div className="p-3 bg-neobrutalist border-2 border-black space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-display font-bold text-[11px] text-black uppercase tracking-wider flex items-center">
+                <Shield className="w-3.5 h-3.5 mr-1 text-black" /> Default Demo Credentials
+              </span>
+              <Badge variant="yellow" className="text-[9px] py-0 px-1.5">DEMO ACCESSIBLE</Badge>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div className="p-2 bg-white border border-black rounded-none space-y-0.5">
+                <div className="font-bold font-display text-[10px] text-black">ADMIN DEMO</div>
+                <div className="text-gray-700 truncate">admin@campuspulse.edu</div>
+                <div className="text-gray-500">Pass: DevPassword123!</div>
+              </div>
+              <div className="p-2 bg-white border border-black rounded-none space-y-0.5">
+                <div className="font-bold font-display text-[10px] text-black">STUDENT DEMO</div>
+                <div className="text-gray-700 truncate">student@campuspulse.edu</div>
+                <div className="text-gray-500">Pass: DevPassword123!</div>
               </div>
             </div>
-          )}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fillDevPersona('admin@campuspulse.edu')}
+                className="text-[11px] py-1 bg-peach/30 justify-center font-display"
+              >
+                Auto-fill Admin
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => fillDevPersona('student@campuspulse.edu')}
+                className="text-[11px] py-1 bg-mint/30 justify-center font-display"
+              >
+                Auto-fill Student
+              </Button>
+            </div>
+          </div>
 
           <div className="text-center pt-2">
             <p className="font-body text-xs text-gray-600">
