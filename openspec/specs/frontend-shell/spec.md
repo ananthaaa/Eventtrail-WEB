@@ -21,11 +21,11 @@ The `frontend/` directory SHALL contain a Vite + React 19 + TypeScript project t
 - **THEN** Vite SHALL start and serve the app at `http://localhost:5173` with hot-module replacement active
 
 ### Requirement: Frontend renders a placeholder page
-The built React app SHALL render a minimal placeholder page (title "EventTrail — Coming Soon", a heading, and a brief description) so the CloudFront URL serves visible content immediately after deploy.
+The built React app SHALL configure client-side routing (e.g., using React Router or state-based tab routing) and render active application screens wrapped in appropriate layout shells, including a public landing page and the `/style-guide` route for visual QA, replacing the static Module 1.1 placeholder page.
 
 #### Scenario: Placeholder page is visible in browser
 - **WHEN** the built bundle is served (via CloudFront or local `npm run preview`)
-- **THEN** the page SHALL display the text "EventTrail" in the document title and a visible heading on screen
+- **THEN** the root path `/` SHALL render the main landing layout and navigation chrome, and the path `/style-guide` SHALL render the interactive design system catalog
 
 ### Requirement: Tailwind CSS is configured and ready for Module 2 tokens
 The `frontend/tailwind.config.ts` SHALL exist, extend the default theme, and have placeholder comments marking where Module 2 will inject color tokens, font families, and shadow utilities. The app SHALL import `index.css` which includes Tailwind's base/components/utilities layers.
