@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* TODO (Module 2): Add Neo-Brutalist utility classes (.neo-border, .neo-shadow*, .bg-grid-dots, scrollbar overrides) here. */

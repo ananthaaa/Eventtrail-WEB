@@ -1,0 +1,21 @@
+# EventTrail — Progress Checklist
+
+- [x] Module 1.1 Repo & Infra Scaffold
+- [ ] Module 1.2 Design System
+- [ ] Module 1.3 Auth (Cognito)
+- [ ] Module 2.1 RDS Schema
+- [ ] Module 2.2 Events API
+- [ ] Module 2.3 Event Discovery UI
+- [ ] Module 2.4 Clubs
+- [ ] Module 3.1 DynamoDB RSVP Design
+- [ ] Module 3.2 RSVP/Waitlist Lambda
+- [ ] Module 3.3 RSVP UI
+- [ ] Module 4.1 Outdoor Routing
+- [ ] Module 4.2 Geofence
+- [ ] Module 4.3 Indoor Navigation
+- [ ] Module 5.1 Notifications
+- [ ] Module 5.2 Admin Dashboard
+- [ ] Module 6.1 Testing
+- [ ] Module 6.2 Security & Cost
+- [ ] Module 6.3 Accessibility & Polish
+- [ ] Module 6.4 Launch

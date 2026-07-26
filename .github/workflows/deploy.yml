@@ -1,0 +1,46 @@
+name: Deploy EventTrail Frontend
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Run linting
+        working-directory: ./frontend
+        run: npm run lint
+
+      - name: Build production bundle
+        working-directory: ./frontend
+        run: npm run build
+
+      - name: Configure AWS Credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_OIDC_ROLE_ARN }}
+          aws-region: ap-south-1
+
+      - name: Sync static site to S3
+        run: aws s3 sync frontend/dist/ s3://${{ vars.S3_BUCKET_NAME }} --delete
+
+      - name: Invalidate CloudFront cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
