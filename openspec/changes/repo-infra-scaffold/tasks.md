@@ -41,4 +41,4 @@
 ## 5. Verification & Commit
 
 - [x] 5.1 Confirm all spec scenarios pass: (a) `PROGRESS.md` has all 19 unchecked modules, (b) `npm ci && npm run lint && npm run build` exits 0 in `frontend/`, (c) `npx cdk synth` exits 0 in `infra/`, (d) `deploy.yml` has no static key references
-- [ ] 5.2 Commit all changes with message: `feat(module-01): repo scaffold, CDK base stack, GitHub Actions CI/CD`
+- [x] 5.2 Commit all changes with message: `feat(module-01): repo scaffold, CDK base stack, GitHub Actions CI/CD`
