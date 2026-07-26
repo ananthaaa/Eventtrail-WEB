@@ -2,7 +2,7 @@
 
 - [x] Module 1.1 Repo & Infra Scaffold
 - [x] Module 1.2 Design System
-- [ ] Module 1.3 Auth (Cognito)
+- [x] Module 1.3 Auth (Cognito)
 - [ ] Module 2.1 RDS Schema
 - [ ] Module 2.2 Events API
 - [ ] Module 2.3 Event Discovery UI

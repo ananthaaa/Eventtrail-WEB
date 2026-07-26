@@ -4,6 +4,10 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as budgets from 'aws-cdk-lib/aws-budgets';
+import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as path from 'path';
 import { Construct } from 'constructs';
 
 export class EventTrailBaseStack extends cdk.Stack {
@@ -11,6 +15,60 @@ export class EventTrailBaseStack extends cdk.Stack {
     super(scope, id, props);
 
     const accountId = this.account;
+
+    // 1.3 Module — Cognito User Pool
+    const userPool = new cognito.UserPool(this, 'CampusPulseUserPool', {
+      userPoolName: `campuspulse-users-${accountId}`,
+      selfSignUpEnabled: true,
+      signInAliases: { email: true },
+      autoVerify: { email: true },
+      passwordPolicy: {
+        minLength: 8,
+        requireLowercase: true,
+        requireUppercase: true,
+        requireDigits: true,
+      },
+      standardAttributes: {
+        fullname: {
+          required: true,
+          mutable: true,
+        },
+      },
+      customAttributes: {
+        role: new cognito.StringAttribute({ mutable: true }),
+        faculty: new cognito.StringAttribute({ mutable: true }),
+      },
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
+    // 1.3 Module — Cognito SPA User Pool Client
+    const userPoolClient = new cognito.UserPoolClient(this, 'CampusPulseSPAClient', {
+      userPool,
+      userPoolClientName: 'CampusPulseSPAClient',
+      generateSecret: false,
+      authFlows: {
+        userSrp: true,
+        userPassword: true,
+      },
+    });
+
+    // 1.3 Module — Post-Confirmation Lambda Trigger (`auth-fn`)
+    const authFn = new lambdaNodejs.NodejsFunction(this, 'AuthPostConfirmationFn', {
+      functionName: `campuspulse-auth-fn-${accountId}`,
+      entry: path.join(__dirname, '../../lambdas/auth-fn/index.ts'),
+      projectRoot: path.join(__dirname, '../../lambdas/auth-fn'),
+      depsLockFilePath: path.join(__dirname, '../../lambdas/auth-fn/package-lock.json'),
+      handler: 'handler',
+      runtime: lambda.Runtime.NODEJS_20_X,
+      timeout: cdk.Duration.seconds(10),
+      memorySize: 256,
+      bundling: {
+        minify: true,
+        sourceMap: true,
+      },
+    });
+
+    userPool.addTrigger(cognito.UserPoolOperation.POST_CONFIRMATION, authFn);
 
     // 3.4 Frontend S3 Bucket (private origin for CloudFront)
     const frontendBucket = new s3.Bucket(this, 'FrontendBucket', {
@@ -140,6 +198,16 @@ export class EventTrailBaseStack extends cdk.Stack {
     });
 
     // 3.11 CfnOutputs
+    new cdk.CfnOutput(this, 'CognitoUserPoolId', {
+      value: userPool.userPoolId,
+      description: 'Cognito User Pool ID',
+    });
+
+    new cdk.CfnOutput(this, 'CognitoUserPoolClientId', {
+      value: userPoolClient.userPoolClientId,
+      description: 'Cognito SPA Client ID',
+    });
+
     new cdk.CfnOutput(this, 'CloudFrontDistributionDomain', {
       value: distribution.distributionDomainName,
       description: 'CloudFront distribution domain name',
@@ -161,3 +229,4 @@ export class EventTrailBaseStack extends cdk.Stack {
     });
   }
 }
+

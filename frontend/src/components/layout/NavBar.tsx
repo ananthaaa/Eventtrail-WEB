@@ -2,7 +2,8 @@ import React from 'react';
 import { clsx } from 'clsx';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { Compass, Calendar, Shield, Palette } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { Compass, Calendar, Shield, Palette, UserCheck } from 'lucide-react';
 
 export interface NavBarProps {
   currentRoute?: string;
@@ -17,6 +18,10 @@ export const NavBar: React.FC<NavBarProps> = ({
   role = 'public',
   className,
 }) => {
+  const { user, isAuthenticated, logout, toggleMockRole, isMockMode } = useAuth();
+
+  const effectiveRole = isAuthenticated && user ? user.role : role;
+
   const navItems = [
     { label: 'Home', route: '/', icon: undefined },
     { label: 'Events', route: '/events', icon: Calendar },
@@ -24,7 +29,7 @@ export const NavBar: React.FC<NavBarProps> = ({
     { label: 'Style Guide', route: '/style-guide', icon: Palette },
   ];
 
-  if (role === 'admin') {
+  if (effectiveRole === 'admin' || effectiveRole === 'club_admin' || effectiveRole === 'campus_staff') {
     navItems.push({ label: 'Admin Portal', route: '/admin', icon: Shield });
   }
 
@@ -77,20 +82,63 @@ export const NavBar: React.FC<NavBarProps> = ({
         })}
       </nav>
 
-      {/* Action CTA / Role status */}
-      <div className="flex items-center gap-3">
-        {role !== 'public' && (
-          <Badge variant={role === 'admin' ? 'peach' : 'mint'}>
-            {role.toUpperCase()} ROLE
-          </Badge>
+      {/* Action CTA / Live Auth Status */}
+      <div className="flex items-center gap-2 md:gap-3">
+        {isAuthenticated && user ? (
+          <>
+            <div
+              onClick={isMockMode ? toggleMockRole : undefined}
+              title={isMockMode ? "Click to toggle Mock Dev Role" : undefined}
+              className={isMockMode ? "cursor-pointer transition-transform hover:scale-105" : ""}
+            >
+              <Badge
+                variant={
+                  user.role === 'club_admin'
+                    ? 'peach'
+                    : user.role === 'campus_staff'
+                    ? 'mint'
+                    : 'yellow'
+                }
+              >
+                {isMockMode && <UserCheck className="w-3 h-3 inline mr-1" />}
+                {user.role.toUpperCase().replace('_', ' ')} {isMockMode && '⚡'}
+              </Badge>
+            </div>
+            <span className="font-display font-bold text-xs hidden lg:inline text-black">
+              {user.name.split(' ')[0]}
+            </span>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                logout();
+                onNavigate?.('/');
+              }}
+              className="text-xs px-2.5 py-1"
+            >
+              Log Out
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onNavigate?.('/login')}
+              className="text-xs px-3 py-1 bg-white"
+            >
+              Log In
+            </Button>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={() => onNavigate?.('/signup')}
+              className="text-xs px-3 py-1"
+            >
+              Sign Up
+            </Button>
+          </>
         )}
-        <Button
-          size="sm"
-          variant="primary"
-          onClick={() => onNavigate?.(role === 'public' ? '/login' : '/profile')}
-        >
-          {role === 'public' ? 'Student Login' : 'My Profile'}
-        </Button>
       </div>
     </header>
   );

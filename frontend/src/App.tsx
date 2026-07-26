@@ -2,8 +2,12 @@ import { useState, useEffect } from 'react';
 import { ToastProvider } from './components/ui';
 import { LandingLayout, StudentLayout, AdminLayout } from './components/layout';
 import { StyleGuide } from './pages/StyleGuide';
+import { Login } from './pages/Login';
+import { Signup } from './pages/Signup';
+import { AuthProvider } from './contexts';
+import { AuthGuard } from './components/auth';
 import { Button, Card, Badge, RSVPTicket, SeatMeter } from './components/ui';
-import { Sparkles, Compass, Shield, ArrowRight } from 'lucide-react';
+import { Sparkles, Compass, Shield, ArrowRight, User } from 'lucide-react';
 
 export default function App() {
   const [currentRoute, setCurrentRoute] = useState<string>(
@@ -38,6 +42,43 @@ export default function App() {
   }, [currentRoute]);
 
   const renderContent = () => {
+    if (currentRoute === '/login') {
+      return (
+        <LandingLayout currentRoute={currentRoute} onNavigate={handleNavigate}>
+          <Login onNavigate={handleNavigate} />
+        </LandingLayout>
+      );
+    }
+
+    if (currentRoute === '/signup') {
+      return (
+        <LandingLayout currentRoute={currentRoute} onNavigate={handleNavigate}>
+          <Signup onNavigate={handleNavigate} />
+        </LandingLayout>
+      );
+    }
+
+    if (currentRoute === '/profile') {
+      return (
+        <AuthGuard onNavigate={handleNavigate}>
+          <StudentLayout currentRoute={currentRoute} onNavigate={handleNavigate}>
+            <div className="max-w-xl mx-auto py-8">
+              <Card variant="white" className="p-8 bg-white space-y-4">
+                <Badge variant="yellow"><User className="w-3.5 h-3.5 inline mr-1" /> USER PROFILE</Badge>
+                <h1 className="font-display font-black text-2xl uppercase">Cognito Account</h1>
+                <p className="font-body text-xs text-gray-600">
+                  Your campus identity is active. In Module 2.1, your profile attributes will be synchronized with AWS RDS MySQL.
+                </p>
+                <div className="pt-2">
+                  <Button variant="primary" onClick={() => handleNavigate('/events')}>Return to Events</Button>
+                </div>
+              </Card>
+            </div>
+          </StudentLayout>
+        </AuthGuard>
+      );
+    }
+
     if (currentRoute === '/style-guide') {
       return (
         <LandingLayout currentRoute={currentRoute} onNavigate={handleNavigate}>
@@ -48,45 +89,47 @@ export default function App() {
 
     if (currentRoute.startsWith('/admin')) {
       return (
-        <AdminLayout currentRoute={currentRoute} onNavigate={handleNavigate}>
-          <div className="space-y-8 select-none">
-            <div className="bg-white neo-border neo-shadow p-6 flex items-center justify-between">
-              <div>
-                <Badge variant="peach">ADMIN WORKSPACE</Badge>
-                <h1 className="font-display font-black text-3xl uppercase tracking-wide mt-2">
-                  Campus Event Dashboard
-                </h1>
-                <p className="font-body text-xs text-gray-600 mt-1">
-                  Manage student RSVPs, approve club organizations, and monitor live venue capacities.
-                </p>
+        <AuthGuard allowedRoles={['club_admin', 'campus_staff', 'admin' as any]} onNavigate={handleNavigate}>
+          <AdminLayout currentRoute={currentRoute} onNavigate={handleNavigate}>
+            <div className="space-y-8 select-none">
+              <div className="bg-white neo-border neo-shadow p-6 flex items-center justify-between">
+                <div>
+                  <Badge variant="peach">ADMIN WORKSPACE</Badge>
+                  <h1 className="font-display font-black text-3xl uppercase tracking-wide mt-2">
+                    Campus Event Dashboard
+                  </h1>
+                  <p className="font-body text-xs text-gray-600 mt-1">
+                    Manage student RSVPs, approve club organizations, and monitor live venue capacities.
+                  </p>
+                </div>
+                <Button variant="primary" onClick={() => handleNavigate('/style-guide')}>
+                  View Style Guide
+                </Button>
               </div>
-              <Button variant="primary" onClick={() => handleNavigate('/style-guide')}>
-                View Style Guide
-              </Button>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card variant="white" shadowSize="small">
-                <span className="font-display font-black text-3xl uppercase">1,420</span>
-                <p className="font-display font-bold text-xs uppercase text-gray-500 mt-1">
-                  Active Student RSVPs
-                </p>
-              </Card>
-              <Card variant="mint" shadowSize="small">
-                <span className="font-display font-black text-3xl uppercase">24</span>
-                <p className="font-display font-bold text-xs uppercase text-black mt-1">
-                  Approved Campus Clubs
-                </p>
-              </Card>
-              <Card variant="yellow" shadowSize="small">
-                <span className="font-display font-black text-3xl uppercase">98.5%</span>
-                <p className="font-display font-bold text-xs uppercase text-black mt-1">
-                  AWS Gateway Uptime
-                </p>
-              </Card>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card variant="white" shadowSize="small">
+                  <span className="font-display font-black text-3xl uppercase">1,420</span>
+                  <p className="font-display font-bold text-xs uppercase text-gray-500 mt-1">
+                    Active Student RSVPs
+                  </p>
+                </Card>
+                <Card variant="mint" shadowSize="small">
+                  <span className="font-display font-black text-3xl uppercase">24</span>
+                  <p className="font-display font-bold text-xs uppercase text-black mt-1">
+                    Approved Campus Clubs
+                  </p>
+                </Card>
+                <Card variant="yellow" shadowSize="small">
+                  <span className="font-display font-black text-3xl uppercase">98.5%</span>
+                  <p className="font-display font-bold text-xs uppercase text-black mt-1">
+                    AWS Gateway Uptime
+                  </p>
+                </Card>
+              </div>
             </div>
-          </div>
-        </AdminLayout>
+          </AdminLayout>
+        </AuthGuard>
       );
     }
 
@@ -248,5 +291,9 @@ export default function App() {
     );
   };
 
-  return <ToastProvider>{renderContent()}</ToastProvider>;
+  return (
+    <AuthProvider>
+      <ToastProvider>{renderContent()}</ToastProvider>
+    </AuthProvider>
+  );
 }

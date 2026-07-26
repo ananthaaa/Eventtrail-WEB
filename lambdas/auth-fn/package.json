@@ -1,0 +1,16 @@
+{
+  "name": "auth-fn",
+  "version": "1.0.0",
+  "description": "Post-confirmation trigger Lambda for EventTrail Cognito onboarding",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.162",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.1",
+    "typescript": "^5.9.3"
+  }
+}
